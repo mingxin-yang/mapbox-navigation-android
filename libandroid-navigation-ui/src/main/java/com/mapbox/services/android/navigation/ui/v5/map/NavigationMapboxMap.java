@@ -282,7 +282,8 @@ public class NavigationMapboxMap {
    * if no route is drawn.
    */
   public void removeRoute() {
-    mapRoute.removeRoute();
+    mapRoute.updateRouteVisibilityTo(false);
+    mapRoute.updateRouteArrowVisibilityTo(false);
   }
 
   /**
@@ -414,6 +415,13 @@ public class NavigationMapboxMap {
     mapCamera.onStop();
     mapRoute.onStop();
     mapWayname.onStop();
+  }
+
+  /**
+   * TODO javadoc
+   */
+  public void onDestroy() {
+    mapRoute.onDestroy();
   }
 
   /**

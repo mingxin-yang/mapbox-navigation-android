@@ -255,7 +255,7 @@ class ExampleActivity : AppCompatActivity(), ExampleView {
   }
 
   override fun showAlternativeRoutes(alternativesVisible: Boolean) {
-    map?.showAlternativeRoutes(false)
+    map?.showAlternativeRoutes(alternativesVisible)
   }
 
   override fun updateLocationRenderMode(renderMode: Int) {
