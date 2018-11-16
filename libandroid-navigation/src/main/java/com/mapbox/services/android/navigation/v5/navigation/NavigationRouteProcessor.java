@@ -8,6 +8,7 @@ import com.mapbox.api.directions.v5.models.LegStep;
 import com.mapbox.api.directions.v5.models.RouteLeg;
 import com.mapbox.api.directions.v5.models.StepIntersection;
 import com.mapbox.geojson.Point;
+import com.mapbox.navigator.BannerInstruction;
 import com.mapbox.navigator.NavigationStatus;
 import com.mapbox.navigator.RouteState;
 import com.mapbox.navigator.VoiceInstruction;
@@ -104,8 +105,8 @@ class NavigationRouteProcessor {
       .inTunnel(status.getInTunnel())
       .currentState(currentRouteState);
 
-    // TODO build banner instructions from status here
     addVoiceInstructions(status, progressBuilder);
+    addBannerInstructions(status, progressBuilder);
     addUpcomingStepPoints(progressBuilder);
     return progressBuilder.build();
   }
@@ -141,5 +142,10 @@ class NavigationRouteProcessor {
   private void addVoiceInstructions(NavigationStatus status, RouteProgress.Builder progressBuilder) {
     VoiceInstruction voiceInstruction = status.getVoiceInstruction();
     progressBuilder.voiceInstruction(voiceInstruction);
+  }
+
+  private void addBannerInstructions(NavigationStatus status, RouteProgress.Builder progressBuilder) {
+    BannerInstruction bannerInstruction = status.getBannerInstruction();
+    progressBuilder.bannerInstruction(bannerInstruction);
   }
 }

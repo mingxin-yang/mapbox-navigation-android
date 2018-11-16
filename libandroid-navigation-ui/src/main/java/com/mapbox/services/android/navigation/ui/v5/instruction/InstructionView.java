@@ -649,7 +649,7 @@ public class InstructionView extends RelativeLayout implements FeedbackBottomShe
 
   private boolean shouldShowSubStep(@Nullable BannerText subText) {
     return subText != null
-      && subText.type() != null
+      && !TextUtils.isEmpty(subText.type())
       && !subText.type().contains(COMPONENT_TYPE_LANE);
   }
 
