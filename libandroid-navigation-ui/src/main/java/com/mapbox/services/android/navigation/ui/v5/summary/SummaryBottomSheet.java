@@ -3,10 +3,9 @@ package com.mapbox.services.android.navigation.ui.v5.summary;
 import android.arch.lifecycle.LifecycleOwner;
 import android.arch.lifecycle.Observer;
 import android.content.Context;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.v7.widget.RecyclerView;
 import android.util.AttributeSet;
-import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.ProgressBar;
@@ -21,8 +20,6 @@ import com.mapbox.services.android.navigation.v5.routeprogress.ProgressChangeLis
 import com.mapbox.services.android.navigation.v5.routeprogress.RouteProgress;
 import com.mapbox.services.android.navigation.v5.utils.DistanceFormatter;
 import com.mapbox.services.android.navigation.v5.utils.LocaleUtils;
-
-import java.text.DecimalFormat;
 
 /**
  * A view with {@link android.support.design.widget.BottomSheetBehavior}
@@ -45,24 +42,21 @@ public class SummaryBottomSheet extends FrameLayout {
   private int timeFormatType;
   private DistanceFormatter distanceFormatter;
 
-  public SummaryBottomSheet(Context context) {
-    this(context, null);
+  public SummaryBottomSheet(@NonNull Context context) {
+    super(context);
+    initialize();
   }
 
-  public SummaryBottomSheet(Context context, AttributeSet attrs) {
-    this(context, attrs, -1);
+  public SummaryBottomSheet(@NonNull Context context, @Nullable AttributeSet attrs) {
+    super(context, attrs);
+    initialize();
   }
 
-  public SummaryBottomSheet(Context context, AttributeSet attrs, int defStyleAttr) {
+  public SummaryBottomSheet(@NonNull Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
     super(context, attrs, defStyleAttr);
     initialize();
   }
 
-  /**
-   * After the layout inflates, binds all necessary views,
-   * create a {@link RecyclerView} for the list of directions,
-   * and a new {@link DecimalFormat} for formatting distance remaining.
-   */
   @Override
   protected void onFinishInflate() {
     super.onFinishInflate();
@@ -135,7 +129,9 @@ public class SummaryBottomSheet extends FrameLayout {
   }
 
   /**
-   * Sets the time format type to use
+   * Sets the time format type to use.
+   * <p>
+   * This will determine how the arrival time with be formatted (12hr or 24hr).
    *
    * @param type to use
    */
@@ -144,9 +140,12 @@ public class SummaryBottomSheet extends FrameLayout {
   }
 
   /**
-   * Sets the distance formatter
+   * Sets the distance formatter which will determine how the distance remaining
+   * will be formatted, localized, and decremented.
+   * <p>
+   * Please see {@link DistanceFormatter} javadoc for further details.
    *
-   * @param distanceFormatter to set
+   * @param distanceFormatter to be set
    */
   public void setDistanceFormatter(DistanceFormatter distanceFormatter) {
     if (distanceFormatter != null && !distanceFormatter.equals(this.distanceFormatter)) {
@@ -154,9 +153,6 @@ public class SummaryBottomSheet extends FrameLayout {
     }
   }
 
-  /**
-   * Inflates this layout needed for this view and initializes the locale as the device locale.
-   */
   private void initialize() {
     initializeDistanceFormatter();
     inflate(getContext(), R.layout.summary_bottomsheet_layout, this);
@@ -170,9 +166,6 @@ public class SummaryBottomSheet extends FrameLayout {
     distanceFormatter = new DistanceFormatter(getContext(), language, unitType, roundingIncrement);
   }
 
-  /**
-   * Finds and binds all necessary views
-   */
   private void bind() {
     distanceRemainingText = findViewById(R.id.distanceRemainingText);
     timeRemainingText = findViewById(R.id.timeRemainingText);
@@ -186,9 +179,6 @@ public class SummaryBottomSheet extends FrameLayout {
     routeOverviewBtn.setImageDrawable(ThemeSwitcher.retrieveThemeOverviewDrawable(getContext()));
   }
 
-  /**
-   * Clears all {@link View}s.
-   */
   private void clearViews() {
     arrivalTimeText.setText(EMPTY_STRING);
     timeRemainingText.setText(EMPTY_STRING);

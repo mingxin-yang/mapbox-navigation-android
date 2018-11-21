@@ -1,5 +1,6 @@
 package com.mapbox.services.android.navigation.ui.v5;
 
+import android.support.annotation.LayoutRes;
 import android.view.View;
 
 public interface NavigationButton {
@@ -27,4 +28,8 @@ public interface NavigationButton {
    * Shows the button
    */
   void show();
+
+  void replaceWith(View button);
+
+  void replaceWith(@LayoutRes int layoutResId, OnLayoutReplacedListener listener);
 }

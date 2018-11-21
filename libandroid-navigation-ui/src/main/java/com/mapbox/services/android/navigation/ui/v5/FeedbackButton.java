@@ -1,23 +1,31 @@
 package com.mapbox.services.android.navigation.ui.v5;
 
 import android.content.Context;
-import android.support.constraint.ConstraintLayout;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
+import android.support.v4.view.AsyncLayoutInflater;
 import android.util.AttributeSet;
+import android.view.View;
+import android.widget.FrameLayout;
 
-public class FeedbackButton extends ConstraintLayout implements NavigationButton {
-  private FloatingActionButton feedbackFab;
+public class FeedbackButton extends FrameLayout implements NavigationButton {
+
   private MultiOnClickListener multiOnClickListener = new MultiOnClickListener();
+  private FloatingActionButton feedbackFab;
+  private CustomLayoutUpdater layoutUpdater;
 
-  public FeedbackButton(Context context) {
-    this(context, null);
+  public FeedbackButton(@NonNull Context context) {
+    super(context);
+    initialize(context);
   }
 
-  public FeedbackButton(Context context, AttributeSet attrs) {
-    this(context, attrs, -1);
+  public FeedbackButton(@NonNull Context context, @Nullable AttributeSet attrs) {
+    super(context, attrs);
+    initialize(context);
   }
 
-  public FeedbackButton(Context context, AttributeSet attrs, int defStyleAttr) {
+  public FeedbackButton(@NonNull Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
     super(context, attrs, defStyleAttr);
     initialize(context);
   }
@@ -59,6 +67,18 @@ public class FeedbackButton extends ConstraintLayout implements NavigationButton
   }
 
   @Override
+  public void replaceWith(View button) {
+    CustomLayoutUpdater layoutUpdater = retrieveLayoutUpdater();
+    layoutUpdater.update(this, button);
+  }
+
+  @Override
+  public void replaceWith(int layoutResId, OnLayoutReplacedListener listener) {
+    CustomLayoutUpdater layoutUpdater = retrieveLayoutUpdater();
+    layoutUpdater.update(this, layoutResId, listener);
+  }
+
+  @Override
   protected void onFinishInflate() {
     super.onFinishInflate();
     bind();
@@ -76,6 +96,13 @@ public class FeedbackButton extends ConstraintLayout implements NavigationButton
     clearListeners();
   }
 
+  private void initialize(Context context) {
+    inflate(context, R.layout.feedback_button_layout, this);
+  }
+
+  private void bind() {
+    feedbackFab = findViewById(R.id.feedbackFab);
+  }
 
   private void setupOnClickListeners() {
     feedbackFab.setOnClickListener(multiOnClickListener);
@@ -87,11 +114,12 @@ public class FeedbackButton extends ConstraintLayout implements NavigationButton
     setOnClickListener(null);
   }
 
-  private void initialize(Context context) {
-    inflate(context, R.layout.feedback_button_layout, this);
-  }
-
-  private void bind() {
-    feedbackFab = findViewById(R.id.feedbackFab);
+  private CustomLayoutUpdater retrieveLayoutUpdater() {
+    if (layoutUpdater != null) {
+      return layoutUpdater;
+    }
+    AsyncLayoutInflater layoutInflater = new AsyncLayoutInflater(getContext());
+    layoutUpdater = new CustomLayoutUpdater(layoutInflater);
+    return layoutUpdater;
   }
 }
